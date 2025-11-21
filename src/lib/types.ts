@@ -60,4 +60,5 @@ export type AnalysisResult = {
     moment: number[];
     displacement: number[];
   }>;
+  reactions: Record<string, { Fx: number; Fy: number; Mz: number }>;
 };

@@ -29,7 +29,7 @@ export class StructuralSolver {
     }
 
     solve(): AnalysisResult {
-        if (this.nodes.length === 0) return { nodeDisplacements: {}, memberForces: {}, diagrams: {} };
+        if (this.nodes.length === 0) return { nodeDisplacements: {}, memberForces: {}, diagrams: {}, reactions: {} };
 
         // 1. Assemble Global Stiffness Matrix (K)
         const K = math.zeros(this.totalDOF, this.totalDOF, 'sparse') as math.Matrix;

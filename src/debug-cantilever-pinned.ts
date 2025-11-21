@@ -26,6 +26,6 @@ try {
     console.log("Pinned Cantilever Results:");
     console.log("Max Moment:", Math.max(...result.diagrams['m1'].moment.map(Math.abs)));
     console.log("End Deflection:", result.diagrams['m1'].displacement[result.diagrams['m1'].displacement.length - 1]);
-} catch (e) {
+} catch (e: any) {
     console.log("Solver failed as expected:", e.message);
 }
