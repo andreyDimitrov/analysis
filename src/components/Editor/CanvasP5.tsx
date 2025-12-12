@@ -109,16 +109,39 @@ export default function CanvasP5({
                 const s = stateRef.current.scale;
                 const snapDist = 15 / s;
 
-                // Snap to nodes
+                // Snap to nodes first (highest priority)
                 for (const node of stateRef.current.nodes) {
                     const d = p.dist(worldX, worldY, node.x, node.y);
                     if (d < snapDist) return { x: node.x, y: node.y, node };
                 }
 
-                // Snap to grid
-                const gx = Math.round(worldX / gridSize) * gridSize;
-                const gy = Math.round(worldY / gridSize) * gridSize;
-                return { x: gx, y: gy };
+                // Orthogonal snapping when drawing
+                const startNode = stateRef.current.drawingStartNode;
+                if (startNode) {
+                    const dx = worldX - startNode.x;
+                    const dy = worldY - startNode.y;
+                    
+                    // Don't snap for very short distances
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance > 0.5) {
+                        // Angle from horizontal (0 to 90 degrees)
+                        const angle = Math.atan2(Math.abs(dy), Math.abs(dx));
+                        const snapThreshold = 15 * Math.PI / 180; // 15 degrees
+                        
+                        // Close to horizontal (angle near 0)
+                        if (angle < snapThreshold) {
+                            return { x: worldX, y: startNode.y };
+                        }
+                        
+                        // Close to vertical (angle near 90°)
+                        if (angle > (Math.PI / 2 - snapThreshold)) {
+                            return { x: startNode.x, y: worldY };
+                        }
+                    }
+                }
+
+                // No snapping - return raw coordinates
+                return { x: worldX, y: worldY };
             };
 
             // Helper: Hit Test
